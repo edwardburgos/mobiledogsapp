@@ -6,15 +6,14 @@
 // import { useDispatch, useSelector } from 'react-redux';
 // import PaginationComponent from '../PaginationComponent/PaginationComponent';
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Button, ImageBackground, FlatList } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Button, ImageBackground, FlatList, TouchableOpacity, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { IonContent, IonItem, IonLabel, IonList, IonListHeader, IonSelect, IonSelectOption, IonPage, IonItemDivider } from '@ionic/react';
 import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect } from 'react';
 import axios from 'axios';
-import { receiveDogs, modifyFinalResult } from '../../actions';
-import Item from '../Item';
+import { receiveDogs, modifyFinalResult } from '../actions';
+import Item from './Item';
 
 
 export default function Home({ navigation }) {
@@ -35,7 +34,7 @@ export default function Home({ navigation }) {
   const dispatch = useDispatch();
 
   const renderItem = ({ item }) => (
-    <Item item={item} />
+    <Item item={item} navigation={navigation}/>
   );
 
   // 
@@ -46,7 +45,7 @@ export default function Home({ navigation }) {
       try {
         let completeDogs = await axios.get(`https://api.thedogapi.com/v1/breeds`, { cancelToken: source.token });
         if (completeDogs.status === 200) {
-          completeDogs = completeDogs.data.map(e => { return { id: e.id, image: e.image, name: e.name, temperament: e.temperament ? e.temperament : '' } })
+          completeDogs = completeDogs.data.map(e => { return { id: e.id, image: e.image.url, name: e.name, temperament: e.temperament ? e.temperament : '' } })
           dispatch(receiveDogs(completeDogs));
           dispatch(modifyFinalResult(completeDogs));
           let temperaments = [];
@@ -100,11 +99,15 @@ export default function Home({ navigation }) {
           </View>
           :
           <View style={styles.containerHome}>
-            <Text style={styles.title}>Dog breeds</Text>
             <View style={styles.filterSection}>
               <Text style={styles.label}>Search a breed</Text>
               <TextInput style={styles.searchInput} id="searchTerm" placeholder="Insert a dog breed" value={searchTerm} onChangeText={text => filter(['searchTerm', text])} />
-              <Button title='Delete search' style={styles.button} id="deleteSearch" onPress={() => { filter(['deleteSearch']) }} />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => { filter(['deleteSearch']) }}
+              >
+                <Text style={styles.buttonText}>Delete search</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.filterSection}>
               <Text style={styles.label}>Filter by temperament</Text>
@@ -124,8 +127,12 @@ export default function Home({ navigation }) {
                   }
                 </Picker>
               </View>
-
-              <Button title='Delete filter' style={styles.button} id="deleteTemperamentFilter" onPress={() => { filter(['deleteTemperamentFilter']) }} />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => { filter(['deleteTemperamentFilter']) }}
+              >
+                <Text style={styles.buttonText}>Delete filter</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.flatlistSection}>
               {finalResultRedux.length ?
@@ -154,6 +161,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%'
+  },
+  button: {
+    backgroundColor: '#2962ff',
+    padding: 10,
+    borderRadius: 5,
+   // borderWidth: 1,
+   // borderColor: 'transparent',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
   contentCenter: {
     backgroundColor: '#f8d7da',

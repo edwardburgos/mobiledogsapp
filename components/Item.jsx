@@ -1,21 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity} from 'react-native';
 import { useDispatch } from 'react-redux';
 //import {changeName} from '../../actions';
 
-export default function Item({ item, navigation}) {
+export default function Item({ item, navigation }) {
     const { id, image, name, temperament } = item;
     const dispatch = useDispatch();
     // let divisor = image.width;
     // if (image.width > 1500)
     return (
-        <View style={styles.card} onPress={() => navigation.navigate('Detail', {item: item.id, name: item.name})}>
+        <View style={styles.card}>
             <Text style={styles.title}>{name}</Text>
             {/* <Image style={styles.image} source={{ uri: image }} alt={name} /> */}
-            <Image source={{uri: image.url}} style={{resizeMode: 'contain', width: 300, height: 300, marginBottom: 16}} />
+            <Image source={{ uri: image }} style={{ resizeMode: 'contain', width: 300, height: 300, marginBottom: 16 }} />
             {temperament ?
-            <>
+                <>
                     <Text style={styles.label}>Temperaments:</Text>
                     <View style={styles.temperamentsContainer}>
                         {temperament.split(', ').map((e, i) =>
@@ -24,11 +24,16 @@ export default function Item({ item, navigation}) {
                             </View>
                         )}
                     </View>
-                    </>
+                </>
                 :
                 null
             }
-            <Button style={styles.detailsButton} title='See details' />
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => { navigation.navigate('Detail', {id, name, image}) }}
+            >
+                <Text style={styles.buttonText}>See details</Text>
+            </TouchableOpacity>
         </View>
     );
 
@@ -91,12 +96,14 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#2962ff',
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#fff',
         padding: 10,
         width: '100%',
-        borderRadius: 16,
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        textAlign: 'center'
     },
     temperament: {
         backgroundColor: '#2962ff',
@@ -107,10 +114,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginHorizontal: 4,
         marginBottom: 4
-    },   
+    },
     temperamentsContainer: {
         flex: 1,
-        width: '100%',
         flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'center',
