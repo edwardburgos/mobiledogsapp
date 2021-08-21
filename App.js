@@ -7,7 +7,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-
 const Stack = createStackNavigator();
 const store = storeConfig();
 

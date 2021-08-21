@@ -1,18 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity} from 'react-native';
-import { useDispatch } from 'react-redux';
-//import {changeName} from '../../actions';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 export default function Item({ item, navigation }) {
+    // Variables
     const { id, image, name, temperament } = item;
-    const dispatch = useDispatch();
-    // let divisor = image.width;
-    // if (image.width > 1500)
+
     return (
         <View style={styles.card}>
             <Text style={styles.title}>{name}</Text>
-            {/* <Image style={styles.image} source={{ uri: image }} alt={name} /> */}
             <Image source={{ uri: image }} style={{ resizeMode: 'contain', width: 300, height: 300, marginBottom: 16 }} />
             {temperament ?
                 <>
@@ -30,31 +25,14 @@ export default function Item({ item, navigation }) {
             }
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => { navigation.navigate('Detail', {id, name, image}) }}
+                onPress={() => { navigation.navigate('Detail', { id, name, image }) }}
             >
                 <Text style={styles.buttonText}>See details</Text>
             </TouchableOpacity>
         </View>
     );
-
-    {/* <View style={styles.content}>
-                <Text style={styles.title}>WELCOME</Text>
-                <Text style={stylesd.description}>Get ready to learn more about dog breeds</Text>
-                <Button onPress={() => dispatch(changeName('PAOLO'))} title="START" style={styles.button} />
-            </View> */}
-    {/* <StatusBar style="auto" /> */ }
-
-
-    // <View style={styles.container}>
-    //     <Text style={styles.title}>{item.name}</Text>
-
-    // </View>
-
-
-    // return (
-
-    //   );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -62,7 +40,6 @@ const styles = StyleSheet.create({
     },
     card: {
         flex: 1,
-        //flexWrap: 'wrap',
         marginBottom: 16,
         backgroundColor: 'rgba(231, 233, 235, 0.5)',
         padding: 16,
@@ -92,13 +69,12 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         alignSelf: 'flex-end',
         marginBottom: 50
-
     },
     button: {
         backgroundColor: '#2962ff',
         padding: 10,
         width: '100%',
-        borderRadius: 5,
+        borderRadius: 5
     },
     buttonText: {
         color: '#fff',
@@ -127,36 +103,3 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     }
 });
-
-
-// import s from './Card.module.css';
-// import React from 'react';
-// import { useHistory } from 'react-router';
-
-// export default function Card({ name, img, temperament, id }) {
-//   // Variables
-//   const history = useHistory();
-
-//   return (
-//     <div style={styles.card} onClick={() => history.push(`/detail/${id}`)}>
-//       <p style={styles.title}>{name}</p>
-//       <img style={styles.image} src={img} alt={name} width="100%" />
-//       {temperament ?
-//         <div style={styles.temperaments}>
-//           <span style={styles.label}>Temperaments:</span>
-//           <div style={styles.temperamentsContainer}>
-//             {temperament.split(', ').map((e, i) =>
-//               <div key={i} style={styles.test}>
-//                 <div style={styles.temperament}>{e}</div>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//         :
-//         null
-//       }
-//       <div style={styles.detailsButton}>See details</div>
-//     </div>
-//   );
-// }
-

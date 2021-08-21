@@ -1,12 +1,5 @@
-
-// import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import Cards from '../Cards/Cards';
-// import * as actionsCreators from '../../actions';
-// import { useDispatch, useSelector } from 'react-redux';
-// import PaginationComponent from '../PaginationComponent/PaginationComponent';
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Button, ImageBackground, FlatList, TouchableOpacity, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import { StyleSheet, Text, TextInput, View, FlatList, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Image, SafeAreaView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
@@ -15,10 +8,8 @@ import axios from 'axios';
 import { receiveDogs, modifyFinalResult } from '../actions';
 import Item from './Item';
 
-
 export default function Home({ navigation }) {
   // Redux states
-  const actualPageRedux = useSelector(state => state.actualPage);
   const dogs = useSelector(state => state.dogs)
   const finalResultRedux = useSelector(state => state.finalResult)
 
@@ -27,17 +18,15 @@ export default function Home({ navigation }) {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [temperament, setTemperament] = useState('');
-  const [property, setProperty] = useState('');
   const [errorGlobal, setErrorGlobal] = useState('');
-  const [gender, setGender] = useState('')
+
   // Variables
   const dispatch = useDispatch();
-
   const renderItem = ({ item }) => (
-    <Item item={item} navigation={navigation}/>
+    <Item item={item} navigation={navigation} />
   );
 
-  // 
+  // This hook allows us to get the dogs and temperaments
   useEffect(() => {
     const cancelToken = axios.CancelToken;
     const source = cancelToken.source();
@@ -59,16 +48,16 @@ export default function Home({ navigation }) {
           return setErrorGlobal('Sorry, an error ocurred');
         }
       } catch (e) {
-        if (e.message !== "Unmounted") setErrorGlobal('Sorry, an error ocurred');
+        return setErrorGlobal('Sorry, an error ocurred');
       }
     }
     requesting();
     return () => source.cancel("Unmounted");
   }, [dispatch])
 
-
-
   // Functions
+
+  // This function allows to filter the information
   function filter(data) {
     if (!dogs.length) return setError('Wait a moment please');
     let componentValue = data[1];
@@ -89,7 +78,7 @@ export default function Home({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, alignItems: 'center', backgroundColor: '#fff' }}>
       {
         errorGlobal ?
           <View style={styles.containerError}>
@@ -98,76 +87,84 @@ export default function Home({ navigation }) {
             </View>
           </View>
           :
-          <View style={styles.containerHome}>
-            <View style={styles.filterSection}>
-              <Text style={styles.label}>Search a breed</Text>
-              <TextInput style={styles.searchInput} id="searchTerm" placeholder="Insert a dog breed" value={searchTerm} onChangeText={text => filter(['searchTerm', text])} />
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => { filter(['deleteSearch']) }}
-              >
-                <Text style={styles.buttonText}>Delete search</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.filterSection}>
-              <Text style={styles.label}>Filter by temperament</Text>
-              <View style={styles.selectContainer}>
-                <Picker
-                  selectedValue={temperament}
-                  onValueChange={(itemValue) =>
-                    filter(['temperament', itemValue])
-                  }>
-                  <Picker.Item key='default' label="Select a temperament" value="default" />
-                  {temperaments.length ?
-                    temperaments.map(t => {
-                      return <Picker.Item key={t.toLowerCase()} label={t} value={t.toLowerCase()} />
-                    })
-                    :
-                    <Picker.Item key='loading' label="Loading" value="loading" />
-                  }
-                </Picker>
-              </View>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => { filter(['deleteTemperamentFilter']) }}
-              >
-                <Text style={styles.buttonText}>Delete filter</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.flatlistSection}>
+          dogs.length ?
+            <View style={styles.containerHome}>
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+                <View style={styles.filterSection}>
+                  <Text style={styles.label}>Search a breed</Text>
+                  <TextInput style={styles.searchInput} id="searchTerm" placeholder="Insert a dog breed" value={searchTerm} onChangeText={text => filter(['searchTerm', text])} />
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => { Keyboard.dismiss(); filter(['deleteSearch']); }}
+                  >
+                    <Text style={styles.buttonText}>Delete search</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+                <View style={styles.filterSection}>
+                  <Text style={styles.label}>Filter by temperament</Text>
+                  <View style={styles.selectContainer}>
+                    <Picker
+                      selectedValue={temperament}
+                      onValueChange={(itemValue) => { Keyboard.dismiss(); filter(['temperament', itemValue]) }
+                      }>
+                      <Picker.Item key='default' label="Select a temperament" value="default" />
+                      {temperaments.length ?
+                        temperaments.map(t => {
+                          return <Picker.Item key={t.toLowerCase()} label={t} value={t.toLowerCase()} />
+                        })
+                        :
+                        <Picker.Item key='loading' label="Loading" value="loading" />
+                      }
+                    </Picker>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => { Keyboard.dismiss(); filter(['deleteTemperamentFilter']) }}
+                  >
+                    <Text style={styles.buttonText}>Delete filter</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
               {finalResultRedux.length ?
                 <FlatList
                   data={finalResultRedux}
                   renderItem={renderItem}
+                  onScroll={Keyboard.dismiss}
+                  style={styles.flatlistSection}
                   keyExtractor={item => `${item.id}`} />
                 :
-                <Text>{error}</Text>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+                  <Text style={styles.error}>{error}</Text>
+                </TouchableWithoutFeedback>
               }
             </View>
-          </View>
+            :
+            <View style={styles.containerLoadingImage}>
+              <Image source={require('../assets/loadingGif.gif')} style={{ resizeMode: 'contain', width: 150, height: 150 }} />
+            </View>
       }
-    </View >
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#fff'
-  },
   containerError: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '90%'
+    width: '100%',
+    paddingHorizontal: '5%'
+  },
+  containerLoadingImage: {
+    flex: 1,
+    justifyContent: 'center'
   },
   button: {
     backgroundColor: '#2962ff',
     padding: 10,
-    borderRadius: 5,
-   // borderWidth: 1,
-   // borderColor: 'transparent',
+    borderRadius: 5
   },
   buttonText: {
     color: '#fff',
@@ -179,29 +176,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#f5c2c7",
     borderRadius: 5,
-    padding: 10,
-    // paddingHorizontal: '0',
-
-
-    // marginBottom: 16,
-    //width: '100%',
-    //maxWidth: '330',
-    //margin: '0 auto'
+    padding: 10
   },
   errorGlobal: {
-
-
-
-    color: '#842029',
-    // width: '100%',
-    // display: 'block',
-
-
+    color: '#842029'
   },
   containerHome: {
     flex: 1,
     alignItems: 'center',
-    width: '90%'
+    width: '100%'
   },
   title: {
     marginTop: 16,
@@ -211,12 +194,20 @@ const styles = StyleSheet.create({
   filterSection: {
     marginTop: 16,
     width: '100%',
-
+    paddingHorizontal: '5%'
   },
   flatlistSection: {
     flex: 1,
-    marginTop: 30,
+    marginTop: 16,
     width: '100%',
+    paddingHorizontal: '5%'
+  },
+  error: {
+    flex: 1,
+    marginTop: 16,
+    width: '100%',
+    paddingHorizontal: '5%',
+    textAlign: 'center'
   },
   label: {
     fontWeight: 'bold',
@@ -237,77 +228,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 5,
     paddingHorizontal: 0
-  },
-
-
+  }
 })
-
-// export default function Home() {
-//   // Redux states
-//   const finalResultRedux = useSelector(state => state.finalResult);
-//   const actualPageRedux = useSelector(state => state.actualPage);
-//   const dogs = useSelector(state => state.dogs)
-
-//   // Own States
-//   const [temperaments, setTemperaments] = useState([]);
-//   const [error, setError] = useState('');
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const [temperament, setTemperament] = useState('');
-//   const [property, setProperty] = useState('');
-//   const [errorGlobal, setErrorGlobal] = useState('')
-//   // Variables
-//   const dispatch = useDispatch();
-
-//   // Hooks
-
-//   // This hook load the dogs and the temperaments for the filter
-//   useEffect(() => {
-//     const cancelToken = axios.CancelToken;
-//     const source = cancelToken.source();
-//     async function requesting() {
-//       try {
-//         const completeDogs = await axios.get(`http://localhost:3001/dogs/all`, { cancelToken: source.token });
-//         dispatch(actionsCreators.receiveDogs(completeDogs.data));
-//         dispatch(actionsCreators.modifyFinalResult(completeDogs.data));
-//         const temperaments = await axios.get('http://localhost:3001/temperament', { cancelToken: source.token });
-//         setTemperaments(temperaments.data);
-//       } catch (e) {
-//         if (e.message !== "Unmounted") setErrorGlobal('Sorry, an error ocurred');
-//       }
-//     }
-//     requesting();
-//     return () => source.cancel("Unmounted");
-//   }, [dispatch])
-
-//   // Functions 
-
-//   function filter(e) {
-//     if (e.target.id !== 'own' && e.target.id !== 'notOwn') { e.preventDefault(); }
-//     if (dogs.length < 9) return setError('Wait a moment please');
-//     let componentValue = e.target.value;
-//     let componentId = e.target.id;
-//     let finalResult = [];
-//     let actualsearchterm = searchTerm;
-//     let actualtemperament = temperament;
-//     let actualproperty = property;
-//     if (componentId === 'searchTerm') { actualsearchterm = componentValue; setSearchTerm(componentValue) }
-//     if (componentId === 'temperament') { actualtemperament = componentValue; setTemperament(componentValue) }
-//     if (componentId === 'own') { actualproperty = 'own'; setProperty('own') }
-//     if (componentId === 'notOwn') { actualproperty = 'notOwn'; setProperty('notOwn') }
-//     if (componentId === 'deleteSearch') { finalResult = dogs; setSearchTerm(''); } else {
-//       finalResult = dogs.filter((e) => e.name.toLowerCase().includes(actualsearchterm.toLowerCase()))
-//     }
-//     if (componentId === 'deleteTemperamentFilter' || (componentId === 'temperament' && componentValue === 'default')) { setTemperament('') } else {
-//       finalResult = finalResult.filter(e => e.temperament ? e.temperament.toLowerCase().includes(actualtemperament.toLowerCase()) : false);
-//     }
-//     if (componentId === 'deletePropertyFilter') { setProperty('') } else {
-//       if (actualproperty === "own") {
-//         finalResult = finalResult.filter(e => e.id >= 265);
-//       } else if (actualproperty === "notOwn") {
-//         finalResult = finalResult.filter(e => e.id < 265);
-//       }
-//     }
-//     if (!finalResult.length) setError('Not results found')
-//     dispatch(actionsCreators.modifyFinalResult(finalResult))
-//   }
-
