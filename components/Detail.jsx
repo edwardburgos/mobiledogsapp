@@ -33,7 +33,7 @@ export default function Detail({ route }) {
     }, [id])
 
     return (
-        <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
+        <SafeAreaView style={{ flex: 1, alignItems: 'center', backgroundColor: '#fff' }}>
             {errorGlobal ?
                 <View style={styles.containerError}>
                     <View style={styles.contentCenter}>
