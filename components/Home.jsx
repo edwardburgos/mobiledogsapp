@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { receiveDogs, modifyFinalResult } from '../actions';
 import Item from './Item';
+import PickerModal from 'react-native-picker-modal-view';
+import temperamentsJSON from '../assets/temperaments.json';
 
 export default function Home({ navigation }) {
   // Redux states
@@ -43,7 +45,7 @@ export default function Home({ navigation }) {
             var newTemperaments = e.temperament.split(', ');
             temperaments = [...temperaments, ...newTemperaments]
           })
-          return setTemperaments([...new Set(temperaments)].sort())
+          return setTemperaments([...new Set(temperaments)].sort().map(temperament => { return { "Name": `${temperament}` } }))
         } else {
           return setErrorGlobal('Sorry, an error ocurred');
         }
@@ -56,6 +58,11 @@ export default function Home({ navigation }) {
   }, [dispatch])
 
   // Functions
+
+  // This function is executed when a temperament is selected
+  function onSelected(selected) {
+    Object.keys(selected).length ? filter(['temperament', JSON.parse(JSON.stringify(selected)).Name]) : filter(['deleteTemperamentFilter'])
+  }
 
   // This function allows to filter the information
   function filter(data) {
@@ -87,7 +94,7 @@ export default function Home({ navigation }) {
             </View>
           </View>
           :
-          dogs.length ?
+          dogs.length && temperaments.length ?
             <View style={styles.containerHome}>
               <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
                 <View style={styles.filterSection}>
@@ -104,21 +111,26 @@ export default function Home({ navigation }) {
               <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
                 <View style={styles.filterSection}>
                   <Text style={styles.label}>Filter by temperament</Text>
-                  <View style={styles.selectContainer}>
-                    <Picker
-                      selectedValue={temperament}
-                      onValueChange={(itemValue) => { Keyboard.dismiss(); filter(['temperament', itemValue]) }
-                      }>
-                      <Picker.Item key='default' label="Select a temperament" value="default" />
-                      {temperaments.length ?
-                        temperaments.map(t => {
-                          return <Picker.Item key={t.toLowerCase()} label={t} value={t.toLowerCase()} />
-                        })
-                        :
-                        <Picker.Item key='loading' label="Loading" value="loading" />
-                      }
-                    </Picker>
-                  </View>
+                  <PickerModal
+                    renderSelectView={(disabled, selected, showModal) =>
+                      <TouchableOpacity
+                        style={styles.selectContainer}
+                        onPress={showModal}
+                      >
+                        <Text style={temperament ? styles.selectedText : styles.selectText}>{temperament ? temperament : 'Select a temperament'}</Text>
+                      </TouchableOpacity>
+                    }
+                    onSelected={onSelected}
+                    items={temperamentsJSON}
+                    sortingLanguage={'tr'}
+                    showToTopButton={true}
+                    selected={temperament}
+                    showAlphabeticalIndex={true}
+                    autoGenerateAlphabeticalIndex={true}
+                    searchPlaceholderText={'Search a temperament'}
+                    requireSelection={false}
+                    autoSort={false}
+                  />
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => { Keyboard.dismiss(); filter(['deleteTemperamentFilter']) }}
@@ -226,7 +238,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#bacbe6",
     borderRadius: 5,
-    paddingVertical: 5,
-    paddingHorizontal: 0
+    paddingVertical: 8,
+    paddingHorizontal: 10
+  },
+  selectText: {
+    color: '#A3A3A3'
+  },
+  selectedText: {
+    color: '#000'
   }
 })

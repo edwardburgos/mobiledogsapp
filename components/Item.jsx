@@ -74,22 +74,25 @@ const styles = StyleSheet.create({
         backgroundColor: '#2962ff',
         padding: 10,
         width: '100%',
-        borderRadius: 5
+        borderRadius: 5,
+        //position: 'absolute'
     },
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
         textAlign: 'center'
     },
-    temperament: {
+    test: {
         backgroundColor: '#2962ff',
-        color: '#fff',
         padding: 8,
         borderRadius: 5,
         borderColor: 'transparent',
         borderWidth: 1,
         marginHorizontal: 4,
         marginBottom: 4
+    },
+    temperament: {
+        color: '#fff'
     },
     temperamentsContainer: {
         flex: 1,

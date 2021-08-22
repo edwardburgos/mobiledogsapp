@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "This is a mobile app about dogs where you can explore all existing dog breeds in detail and filter them according to your interests.",
+    "githubUrl": "https://github.com/edwardburgos/mobiledogsapp"
   }
 }
