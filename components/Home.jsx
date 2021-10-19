@@ -140,7 +140,7 @@ export default function Home({ navigation }) {
                     </TouchableOpacity>
                   </View>
                   <TouchableOpacity
-                    style={styles.tinyLogoContainer}
+                    style={styles.configContainer}
                     onPress={() => setShowModal(true)}
                   >
                     <Image
@@ -398,6 +398,9 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
   },
+  configContainer: {
+    marginLeft: 16,
+  },
   closeModalButton: {
     //alignItems: 'flex-end',
     // justifyContent: 'flex-end',
@@ -418,7 +421,6 @@ const styles = StyleSheet.create({
   },
   configIcon: {
     width: 30,
-    marginLeft: 16,
     height: 30
   },
   selectContainer: {
