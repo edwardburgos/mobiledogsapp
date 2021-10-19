@@ -13,19 +13,21 @@ import temperamentsJSON from '../assets/temperaments.json';
 import { close, search, options, closeWithoutCircle } from '../assets/icons';
 import RadioButton from './RadioButton';
 import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+import { alltemperaments } from '../assets/simplifiedTemperaments';
 
 export default function Home({ navigation }) {
   // Redux states
   const dogs = useSelector(state => state.dogs)
   const finalResultRedux = useSelector(state => state.finalResult)
   // Own States
-  const [temperaments, setTemperaments] = useState([]);
+  const [temperaments, setTemperaments] = useState(alltemperaments);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [temperament, setTemperament] = useState('');
   const [errorGlobal, setErrorGlobal] = useState('');
-  const [selectedTemperaments, setSelectedTemperaments] = useState('');
+  const [selectedTemperaments, setSelectedTemperaments] = useState([]);
   const [showModal, setShowModal] = useState(false)
+  const [searchedTemperament, setSearchedTemperament] = useState('')
   // Variables
   const dispatch = useDispatch();
   const renderItem = ({ item }) => (
@@ -33,7 +35,7 @@ export default function Home({ navigation }) {
   );
   const renderTemperament = ({ item }) => (
     <View style={styles.temperamentContainer}>
-      <RadioButton selected={true} />
+      <RadioButton selected={selectedTemperaments.includes(item)} />
       {/* <View style={styles.radioBorder}>
         <View style={styles.radioSelected} />
         
@@ -45,7 +47,7 @@ export default function Home({ navigation }) {
             : null
         } */}
 
-      <Text>{item.Name}</Text>
+      <Text>{item}</Text>
     </View>
   )
   // This hook allows us to get the dogs and temperaments
@@ -59,13 +61,7 @@ export default function Home({ navigation }) {
           completeDogs = completeDogs.data.map(e => { return { id: e.id, image: e.image.url, name: e.name, temperament: e.temperament ? e.temperament : '' } })
           dispatch(receiveDogs(completeDogs));
           dispatch(modifyFinalResult(completeDogs));
-          let temperaments = [];
-          completeDogs.forEach(e => {
-            if (!e.temperament) return;
-            var newTemperaments = e.temperament.split(', ');
-            temperaments = [...temperaments, ...newTemperaments]
-          })
-          return setTemperaments([...new Set(temperaments)].sort().map(temperament => { return { "Name": `${temperament}` } }))
+          
         } else {
           return setErrorGlobal('Sorry, an error ocurred');
         }
@@ -112,6 +108,16 @@ export default function Home({ navigation }) {
     // }
     if (!finalResult.length) setError('Not results found')
     dispatch(modifyFinalResult(finalResult))
+  }
+
+  function findTemperament(text) {
+    if (text) {
+      setSearchedTemperament(text)
+      
+    } else {
+      setSearchedTemperament('')
+      
+    }
   }
   return (
     <SafeAreaView style={{ flex: 1, alignItems: 'center', backgroundColor: '#fff' }}>
@@ -247,10 +253,10 @@ export default function Home({ navigation }) {
 
                     <View style={styles.searchModalContent}>
                       <View style={styles.test}>
-                        <TextInput style={styles.searchInput} id="searchTerm" placeholder="Insert a temperament" value={searchTerm} onChangeText={text => filter(['searchTerm', text])} />
+                        <TextInput style={styles.searchInput} id="searchedTemperament" placeholder="Insert a temperament" value={searchedTemperament} onChangeText={text => findTemperament(text)} />
                         <TouchableOpacity
                           style={styles.tinyLogoContainer}
-                          onPress={() => { if (searchTerm) { Keyboard.dismiss(); filter(['deleteSearch', '']) } }}
+                          onPress={() => { if (searchedTemperament) { Keyboard.dismiss(); findTemperament('') } }}
                         >
                           <Image
                             style={styles.tinyLogo}
@@ -260,11 +266,11 @@ export default function Home({ navigation }) {
                       </View>
                     </View>
                     <FlatList
-                      data={temperamentsJSON}
+                      data={temperaments}
                       renderItem={renderTemperament}
                       onScroll={Keyboard.dismiss}
                       style={styles.flatlistSectionModal}
-                      keyExtractor={item => `${item.Name.toLowerCase()}`} />
+                      keyExtractor={item => `${item.toLowerCase()}`} />
 
                     {/* <RadioButton temperament={e['Name']}/> */}
 
