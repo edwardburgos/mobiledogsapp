@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, FlatList, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Image, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, TextInput, View, FlatList, Modal, TouchableOpacity, Pressable, TouchableWithoutFeedback, Keyboard, Image, SafeAreaView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
@@ -10,7 +10,10 @@ import { receiveDogs, modifyFinalResult } from '../actions';
 import Item from './Item';
 import PickerModal from 'react-native-picker-modal-view';
 import temperamentsJSON from '../assets/temperaments.json';
-import { close, search, options, github } from '../assets/icons';
+import { close, search, options, closeWithoutCircle } from '../assets/icons';
+import RadioButton from './RadioButton';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+
 export default function Home({ navigation }) {
   // Redux states
   const dogs = useSelector(state => state.dogs)
@@ -22,11 +25,29 @@ export default function Home({ navigation }) {
   const [temperament, setTemperament] = useState('');
   const [errorGlobal, setErrorGlobal] = useState('');
   const [selectedTemperaments, setSelectedTemperaments] = useState('');
+  const [showModal, setShowModal] = useState(false)
   // Variables
   const dispatch = useDispatch();
   const renderItem = ({ item }) => (
     <Item item={item} navigation={navigation} />
   );
+  const renderTemperament = ({ item }) => (
+    <View style={styles.temperamentContainer}>
+      <RadioButton selected={true} />
+      {/* <View style={styles.radioBorder}>
+        <View style={styles.radioSelected} />
+        
+      </View> */}
+
+      {/* {
+          props.selected ?
+            <View style={styles.radioSelected} />
+            : null
+        } */}
+
+      <Text>{item.Name}</Text>
+    </View>
+  )
   // This hook allows us to get the dogs and temperaments
   useEffect(() => {
     const cancelToken = axios.CancelToken;
@@ -118,10 +139,15 @@ export default function Home({ navigation }) {
                       />
                     </TouchableOpacity>
                   </View>
-                  <Image
-                    style={styles.configIcon}
-                    source={options}
-                  />
+                  <TouchableOpacity
+                    style={styles.tinyLogoContainer}
+                    onPress={() => setShowModal(true)}
+                  >
+                    <Image
+                      style={styles.configIcon}
+                      source={options}
+                    />
+                  </TouchableOpacity>
                 </View>
               </TouchableWithoutFeedback>
 
@@ -194,13 +220,64 @@ export default function Home({ navigation }) {
                   <Text style={styles.error}>{error}</Text>
                 </TouchableWithoutFeedback>
               }
-            </View>
+
+              <Modal
+                animationType="slide"
+                transparent={false}
+                visible={showModal}
+                onRequestClose={() => {
+                  setShowModal(false);
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <View style={styles.modalHeader}>
+                      <Text style={styles.modalTitle}>Select temperamets</Text>
+                      <TouchableOpacity
+                        style={styles.closeModalButton}
+                        onPress={() => setShowModal(false)}
+                      >
+                        <Image
+                          style={styles.closeModalIcon}
+                          source={closeWithoutCircle}
+                        />
+                      </TouchableOpacity>
+                    </View>
+
+
+                    <View style={styles.searchModalContent}>
+                      <View style={styles.test}>
+                        <TextInput style={styles.searchInput} id="searchTerm" placeholder="Insert a temperament" value={searchTerm} onChangeText={text => filter(['searchTerm', text])} />
+                        <TouchableOpacity
+                          style={styles.tinyLogoContainer}
+                          onPress={() => { if (searchTerm) { Keyboard.dismiss(); filter(['deleteSearch', '']) } }}
+                        >
+                          <Image
+                            style={styles.tinyLogo}
+                            source={searchTerm ? close : search}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                    <FlatList
+                      data={temperamentsJSON}
+                      renderItem={renderTemperament}
+                      onScroll={Keyboard.dismiss}
+                      style={styles.flatlistSectionModal}
+                      keyExtractor={item => `${item.Name.toLowerCase()}`} />
+
+                    {/* <RadioButton temperament={e['Name']}/> */}
+
+                  </View>
+                </View>
+              </Modal>
+            </View >
             :
             <View style={styles.containerLoadingImage}>
               <Image source={require('../assets/loadingGif.gif')} style={{ resizeMode: 'contain', width: 150, height: 150 }} />
             </View>
       }
-    </SafeAreaView>
+    </SafeAreaView >
   )
 }
 const styles = StyleSheet.create({
@@ -234,7 +311,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: '5%',
     alignItems: 'center',
-    height: 60,
+    height: 45,
+    marginTop: 16
+  },
+  searchModalContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 45
   },
   test: {
     flex: 1,
@@ -282,6 +365,11 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: '5%'
   },
+  flatlistSectionModal: {
+    flex: 1,
+    marginTop: 16,
+    width: '100%'
+  },
   error: {
     flex: 1,
     marginTop: 16,
@@ -310,6 +398,18 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
   },
+  closeModalButton: {
+    //alignItems: 'flex-end',
+    // justifyContent: 'flex-end',
+    // right: 10,
+    height: 30,
+    width: 30,
+    marginLeft: 8,
+  },
+  closeModalIcon: {
+    width: 30,
+    height: 30
+  },
   tinyLogo: {
     // verticalAlign: 'middle',
     position: 'absolute',
@@ -334,5 +434,35 @@ const styles = StyleSheet.create({
   },
   selectedText: {
     color: '#000'
+  },
+  temperamentContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  centeredView: {
+    flex: 1,
+    paddingHorizontal: '5%',
+    width: '100%',
+    alignItems: "center",
+  },
+  modalView: {
+    flex: 1,
+    width: '100%',
+    alignItems: "center",
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    marginBottom: 8,
+    marginTop: 8,
+    alignItems: 'center'
+  },
+  modalTitle: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    fontSize: 18,
+    fontWeight: 'bold'
   }
 })
