@@ -390,7 +390,8 @@ const styles = StyleSheet.create({
   searchModalContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 45
+    height: 45,
+    paddingHorizontal: '5%'
   },
   test: {
     flex: 1,
@@ -457,7 +458,8 @@ const styles = StyleSheet.create({
   flatlistSectionModal: {
     flex: 1,
     marginTop: 16,
-    width: '100%'
+    width: '100%',
+    paddingHorizontal: '5%'
   },
   error: {
     flex: 1,
@@ -541,7 +543,6 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    paddingHorizontal: '5%',
     width: '100%',
     alignItems: "center",
   },
@@ -554,7 +555,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 8,
     marginTop: 8,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: '5%'
   },
   modalTitle: {
     flex: 1,
