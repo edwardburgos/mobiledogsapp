@@ -134,7 +134,7 @@ export default function Home({ navigation }) {
   )
 
   return (
-    <SafeAreaView style={{ flex: 1, alignItems: 'center', backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#fff' }}>
       {
         errorGlobal ?
           <View style={styles.containerError}>
@@ -338,10 +338,10 @@ export default function Home({ navigation }) {
             </View >
             :
             <View style={styles.containerLoadingImage}>
-              <Image source={require('../assets/loadingGif.gif')} style={{ resizeMode: 'contain', width: 150, height: 150 }} />
+              <Image source={require('../assets/loadingGif.gif')} style={{ resizeMode: 'contain', width: 50, height: 50 }} />
             </View>
       }
-    </SafeAreaView >
+    </View>
   )
 }
 const styles = StyleSheet.create({
@@ -417,10 +417,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#f5c2c7",
     borderRadius: 5,
-    padding: 10
+    padding: 10,
+    width: '100%'
   },
   errorGlobal: {
-    color: '#842029'
+    color: '#842029',
+    textAlign: 'center'
   },
   containerHome: {
     flex: 1,
