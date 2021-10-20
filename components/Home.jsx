@@ -9,7 +9,6 @@ import axios from 'axios';
 import { receiveDogs, modifyFinalResult } from '../actions';
 import Item from './Item';
 import PickerModal from 'react-native-picker-modal-view';
-import temperamentsJSON from '../assets/temperaments.json';
 import { close, search, options, closeWithoutCircle, closeWithoutCircleWhite, noResults } from '../assets/icons';
 import RadioButton from './RadioButton';
 import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
