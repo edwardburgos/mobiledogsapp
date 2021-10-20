@@ -1,32 +1,33 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Item({ item, navigation }) {
     // Variables
     const { id, image, name, temperament } = item;
 
     return (
-        <TouchableOpacity
-            style={styles.card}
+        <Pressable
+            style={({ pressed }) => [styles.card, pressed ? styles.border : '' ]}
             onPress={() => { navigation.navigate('Detail', { id, name, image }) }}
         >
-            <Text style={styles.title}>{name}</Text>
-            <Image source={{ uri: image }} style={{ resizeMode: 'contain', width: 300, height: 300, marginBottom: 16 }} />
-            {temperament ?
-                <>
-                    <Text style={styles.label}>Temperaments:</Text>
-                    <View style={styles.temperamentsContainer}>
-                        {temperament.split(', ').map((e, i) =>
-                            <View key={i} style={styles.test}>
-                                <Text style={styles.temperament}>{e}</Text>
-                            </View>
-                        )}
-                    </View>
-                </>
-                :
-                null
-            }
-        </TouchableOpacity>
+            <View>
+                <Text style={styles.title}>{name}</Text>
+                <Image source={{ uri: image }} style={{ resizeMode: 'contain', width: 335, height: 180, alignSelf: 'center' }} />
+                {temperament ?
+                    <>
+                        <Text style={styles.label}>Temperaments:</Text>
+                        <View style={styles.temperamentsContainer}>
+                            {temperament.split(', ').map((e, i) =>
+                                    <Text key={i} style={styles.temperament}>{e}</Text>
+                            )}
+                        </View>
+                    </>
+                    :
+                    null
+                }
+            </View>
+        </Pressable>
     );
 }
 
@@ -42,8 +43,13 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 16,
         alignItems: 'center',
-        width: '100%'
+        width: '100%',
+        padding: '3%'
     },
+    border: {
+        borderColor: "#2962ff",
+        borderWidth: 2,
+    },  
     image: {
         flex: 1,
         justifyContent: "center",
@@ -51,10 +57,11 @@ const styles = StyleSheet.create({
     },
     title: {
         marginTop: 0,
-        marginBottom: 16,
+        marginBottom: 8,
         fontWeight: 'bold',
         textAlign: 'center',
-        fontSize: 20
+        fontSize: 20,
+        marginTop: 4
     },
     description: {
         marginBottom: 16,
@@ -85,7 +92,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: 'transparent',
         borderWidth: 1,
-        marginHorizontal: 4,
+        marginRight: 4,
         marginBottom: 4
     },
     temperamentsContainer: {
@@ -93,10 +100,12 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 8,
+        marginTop: 4,
         marginBottom: 12
     },
     label: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginTop: 8,
+        textAlign: 'center'
     }
 });
