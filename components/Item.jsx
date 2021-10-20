@@ -1,14 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native';
 
 export default function Item({ item, navigation }) {
     // Variables
     const { id, image, name, temperament } = item;
 
     return (
-        <Pressable
-            style={({ pressed }) => [styles.card, pressed ? styles.border : '' ]}
+        <TouchableHighlight
+            activeOpacity={0.5}
+            underlayColor="#b5b5b5"
+            style={styles.card}
             onPress={() => { navigation.navigate('Detail', { id, name, image }) }}
         >
             <View>
@@ -19,7 +20,7 @@ export default function Item({ item, navigation }) {
                         <Text style={styles.label}>Temperaments:</Text>
                         <View style={styles.temperamentsContainer}>
                             {temperament.split(', ').map((e, i) =>
-                                    <Text key={i} style={styles.temperament}>{e}</Text>
+                                <Text key={i} style={styles.temperament}>{e}</Text>
                             )}
                         </View>
                     </>
@@ -27,7 +28,7 @@ export default function Item({ item, navigation }) {
                     null
                 }
             </View>
-        </Pressable>
+        </TouchableHighlight>
     );
 }
 
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     border: {
         borderColor: "#2962ff",
         borderWidth: 2,
-    },  
+    },
     image: {
         flex: 1,
         justifyContent: "center",
