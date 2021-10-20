@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
     width: 20,
   },
   configContainer: {
-    marginLeft: 16,
+    marginLeft: 10,
   },
   closeModalButton: {
     //alignItems: 'flex-end',
@@ -522,8 +522,8 @@ const styles = StyleSheet.create({
     width: 20
   },
   configIcon: {
-    width: 30,
-    height: 30
+    width: 20,
+    height: 20
   },
   selectContainer: {
     marginBottom: 8,
