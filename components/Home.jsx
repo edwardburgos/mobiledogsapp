@@ -408,8 +408,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   temperamentText: {
-    color: '#fff',
-    backgroundColor: 'red'
+    color: '#fff'
     // flex: 1,
     // flexDirection: 'column'
   },
