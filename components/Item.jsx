@@ -8,7 +8,7 @@ export default function Item({ item, navigation }) {
     return (
         <TouchableHighlight
             activeOpacity={0.5}
-            underlayColor="#b5b5b5"
+            underlayColor="rgb(231, 233, 235)"
             style={styles.card}
             onPress={() => { navigation.navigate('Detail', { id, name, image }) }}
         >
