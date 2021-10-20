@@ -179,7 +179,7 @@ export default function Home({ navigation }) {
                     >
                       <Text style={styles.temperamentText}>{e}</Text>
                       <TouchableOpacity
-                        style={styles.configContainer}
+                        style={styles.deleteContainer}
                         onPress={() => { setSelectedTemperaments(selectedTemperaments.filter(temperament => temperament !== e)); filter([`id${e.toLowerCase()}`, e], selectedTemperaments); }}
                       >
                         <Image
@@ -409,6 +409,7 @@ const styles = StyleSheet.create({
   },
   temperamentText: {
     color: '#fff',
+    backgroundColor: 'red'
     // flex: 1,
     // flexDirection: 'column'
   },
@@ -497,10 +498,12 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
   },
+  deleteContainer: {
+    marginLeft: 10
+  },
   deleteTemperament: {
     height: 20,
-    width: 20,
-    marginLeft: 10
+    width: 20
   },
   configIcon: {
     width: 30,
