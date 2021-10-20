@@ -111,6 +111,7 @@ export default function Home({ navigation }) {
       <TouchableOpacity
         style={styles.fondo}
         onPress={() => {
+          Keyboard.dismiss();
           selectedTemperaments.includes(item) ?
             setSelectedTemperaments(selectedTemperaments.filter(e => e !== item))
             :
@@ -264,6 +265,7 @@ export default function Home({ navigation }) {
                   data={finalResultRedux}
                   renderItem={renderItem}
                   onScroll={Keyboard.dismiss}
+                  keyboardShouldPersistTaps={'handled'}
                   style={styles.flatlistSection}
                   keyExtractor={item => `${item.id}`} />
                 :
@@ -330,6 +332,7 @@ export default function Home({ navigation }) {
                           data={temperaments}
                           renderItem={renderTemperament}
                           onScroll={Keyboard.dismiss}
+                          keyboardShouldPersistTaps={'handled'}
                           style={styles.flatlistSectionModal}
                           keyExtractor={item => `${item.toLowerCase()}`} />
                         :
