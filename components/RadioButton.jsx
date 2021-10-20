@@ -3,21 +3,14 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
 export default function RadioButton({ selected, extraStyles }) {
 
-    const [selectedRadio, setSelectedRadio] = useState(selected)
-
     return (
-        <TouchableOpacity
-            style={styles.fondo}
-            onPress={() => setSelectedRadio(true)}
-        >
-            <View style={[selectedRadio ? styles.selectedBorder : styles.border, extraStyles]}>
+            <View style={[selected ? styles.selectedBorder : styles.border, extraStyles]}>
                 {
-                    selectedRadio ?
+                    selected ?
                         <View style={styles.selected} />
                         : null
                 }
             </View>
-        </TouchableOpacity>
     );
 }
 
@@ -45,8 +38,5 @@ const styles = StyleSheet.create({
         width: 6,
         borderRadius: 6,
         backgroundColor: '#2962ff',
-    },
-    fondo: {
-        marginRight: 10
     }
 })

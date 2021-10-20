@@ -10,7 +10,7 @@ import { receiveDogs, modifyFinalResult } from '../actions';
 import Item from './Item';
 import PickerModal from 'react-native-picker-modal-view';
 import temperamentsJSON from '../assets/temperaments.json';
-import { close, search, options, closeWithoutCircle } from '../assets/icons';
+import { close, search, options, closeWithoutCircle, closeWithoutCircleWhite } from '../assets/icons';
 import RadioButton from './RadioButton';
 import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import { alltemperaments } from '../assets/simplifiedTemperaments';
@@ -33,23 +33,7 @@ export default function Home({ navigation }) {
   const renderItem = ({ item }) => (
     <Item item={item} navigation={navigation} />
   );
-  const renderTemperament = ({ item }) => (
-    <View style={styles.temperamentContainer}>
-      <RadioButton selected={selectedTemperaments.includes(item)} />
-      {/* <View style={styles.radioBorder}>
-        <View style={styles.radioSelected} />
-        
-      </View> */}
 
-      {/* {
-          props.selected ?
-            <View style={styles.radioSelected} />
-            : null
-        } */}
-
-      <Text>{item}</Text>
-    </View>
-  )
   // This hook allows us to get the dogs and temperaments
   useEffect(() => {
     const cancelToken = axios.CancelToken;
@@ -61,7 +45,7 @@ export default function Home({ navigation }) {
           completeDogs = completeDogs.data.map(e => { return { id: e.id, image: e.image.url, name: e.name, temperament: e.temperament ? e.temperament : '' } })
           dispatch(receiveDogs(completeDogs));
           dispatch(modifyFinalResult(completeDogs));
-          
+
         } else {
           return setErrorGlobal('Sorry, an error ocurred');
         }
@@ -111,14 +95,44 @@ export default function Home({ navigation }) {
   }
 
   function findTemperament(text) {
+    setSearchedTemperament(text)
     if (text) {
-      setSearchedTemperament(text)
-      
+      setTemperaments(alltemperaments.filter(e => e.toLowerCase().includes(text.toLowerCase())))
     } else {
-      setSearchedTemperament('')
-      
+      setTemperaments(alltemperaments)
     }
   }
+
+  const renderTemperament = ({ item }) => (
+    <View style={styles.temperamentContainer}>
+      <TouchableOpacity
+        style={styles.fondo}
+        onPress={() => {
+          selectedTemperaments.includes(item) ?
+            setSelectedTemperaments(selectedTemperaments.filter(e => e !== item))
+            :
+            setSelectedTemperaments([...selectedTemperaments, item]);
+          filter([item.toLowerCase(), item], selectedTemperaments);
+        }}
+      >
+        <RadioButton selected={selectedTemperaments.includes(item)} />
+      </TouchableOpacity>
+
+      {/* <View style={styles.radioBorder}>
+        <View style={styles.radioSelected} />
+        
+      </View> */}
+
+      {/* {
+          props.selected ?
+            <View style={styles.radioSelected} />
+            : null
+        } */}
+
+      <Text>{item}</Text>
+    </View>
+  )
+
   return (
     <SafeAreaView style={{ flex: 1, alignItems: 'center', backgroundColor: '#fff' }}>
       {
@@ -129,7 +143,7 @@ export default function Home({ navigation }) {
             </View>
           </View>
           :
-          dogs.length && temperaments.length ?
+          dogs.length ?
             <View style={styles.containerHome}>
               <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={[styles.searchContainer, selectedTemperaments.length ? styles.mb0 : styles.mb16]}>
                 <View style={styles.searchContent}>
@@ -156,6 +170,28 @@ export default function Home({ navigation }) {
                   </TouchableOpacity>
                 </View>
               </TouchableWithoutFeedback>
+              <View style={styles.selectedTemperaments}>
+                {
+                  selectedTemperaments.map((e, index) =>
+                    <View
+                      key={index}
+                      style={styles.selectedTemperament}
+                    >
+                      <Text style={styles.temperamentText}>{e}</Text>
+                      <TouchableOpacity
+                        style={styles.configContainer}
+                        onPress={() => { setSelectedTemperaments(selectedTemperaments.filter(temperament => temperament !== e)); filter([`id${e.toLowerCase()}`, e], selectedTemperaments); }}
+                      >
+                        <Image
+                          style={styles.deleteTemperament}
+                          source={closeWithoutCircleWhite}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  )
+                }
+              </View>
+
 
               {/* <div className={s.test}>
                       <Form.Control id="searchTerm" autoComplete="off" value={searchTerm} onChange={e => filter(e)} className={s.searchInput} placeholder='Search a dog breed' />
@@ -233,6 +269,8 @@ export default function Home({ navigation }) {
                 visible={showModal}
                 onRequestClose={() => {
                   setShowModal(false);
+                  setTemperaments(alltemperaments);
+                  setSearchedTemperament('');
                 }}
               >
                 <View style={styles.centeredView}>
@@ -241,7 +279,11 @@ export default function Home({ navigation }) {
                       <Text style={styles.modalTitle}>Select temperamets</Text>
                       <TouchableOpacity
                         style={styles.closeModalButton}
-                        onPress={() => setShowModal(false)}
+                        onPress={() => {
+                          setShowModal(false);
+                          setTemperaments(alltemperaments);
+                          setSearchedTemperament('');
+                        }}
                       >
                         <Image
                           style={styles.closeModalIcon}
@@ -260,7 +302,7 @@ export default function Home({ navigation }) {
                         >
                           <Image
                             style={styles.tinyLogo}
-                            source={searchTerm ? close : search}
+                            source={searchedTemperament ? close : search}
                           />
                         </TouchableOpacity>
                       </View>
@@ -335,10 +377,24 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5
   },
+  selectedTemperament: {
+    backgroundColor: '#2962ff',
+    padding: 10,
+    borderRadius: 5,
+    margin: 4,
+    marginLeft: 0,
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center'
+  },
+  temperamentText: {
+    color: '#fff',
+    // flex: 1,
+    // flexDirection: 'column'
   },
   contentCenter: {
     backgroundColor: '#f8d7da',
@@ -367,7 +423,7 @@ const styles = StyleSheet.create({
   },
   flatlistSection: {
     flex: 1,
-    marginTop: 16,
+    marginTop: 12,
     width: '100%',
     paddingHorizontal: '5%'
   },
@@ -425,6 +481,11 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
   },
+  deleteTemperament: {
+    height: 20,
+    width: 20,
+    marginLeft: 10
+  },
   configIcon: {
     width: 30,
     height: 30
@@ -472,5 +533,40 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     fontSize: 18,
     fontWeight: 'bold'
+  },
+  fondo: {
+    marginRight: 10
+  },
+  border: {
+    height: 18,
+    width: 18,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectedBorder: {
+    height: 18,
+    width: 18,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#2962ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selected: {
+    height: 6,
+    width: 6,
+    borderRadius: 6,
+    backgroundColor: '#2962ff',
+  },
+  selectedTemperaments: {
+    width: '100%',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginTop: 4,
+    paddingHorizontal: '5%'
   }
 })
