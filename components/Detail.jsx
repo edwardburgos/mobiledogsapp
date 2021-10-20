@@ -33,7 +33,7 @@ export default function Detail({ route }) {
     }, [id])
 
     return (
-        <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
+        <View style={styles.container}>
             {errorGlobal ?
                 <View style={styles.containerError}>
                     <View style={styles.contentCenter}>
@@ -42,60 +42,89 @@ export default function Detail({ route }) {
                 </View>
                 :
                 Object.keys(dog).length ?
-                    <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', width: '100%', paddingHorizontal: '5%' }}>
-
-                        <Image source={{ uri: image }} style={{ resizeMode: 'contain', width: 300, height: 300, marginBottom: 16 }} />
-                        {dog.weight.metric ? <>
-                            <Text style={styles.label}>Weight:</Text>
-                            <Text style={styles.description}>{`${dog.weight.metric} kg`}</Text>
-                        </> : null}
-                        {dog.height.metric ? <>
-                            <Text style={styles.label}>Height:</Text>
-                            <Text style={styles.description}>{`${dog.height.metric} cm`}</Text>
-                        </> : null}
-                        {dog.life_span ? <>
-                            <Text style={styles.label}>Life expectancy:</Text>
-                            <Text style={styles.description}>{`${dog.life_span}`}</Text>
-                        </> : null}
-                        {dog.bred_for ? <>
-                            <Text style={styles.label}>Bred for:</Text>
-                            <Text style={styles.description}>{`${dog.bred_for}`}</Text>
-                        </> : null}
-                        {dog.breed_group ? <>
-                            <Text style={styles.label}>Breed group:</Text>
-                            <Text style={styles.description}>{`${dog.breed_group}`}</Text>
-                        </> : null}
-                        {dog.temperament ?
-                            <>
-                                <Text style={styles.label}>Temperaments:</Text>
-                                <View style={styles.temperamentsContainer}>
-                                    {dog.temperament.split(', ').map((e, i) =>
-                                        <View key={i} style={styles.test}>
-                                            <Text style={styles.temperament}>{e}</Text>
-                                        </View>
-                                    )}
-                                </View>
-                            </>
-                            :
-                            null
-                        }
+                    <ScrollView contentContainerStyle={styles.scroll}>
+                        <View>
+                            <Image source={{ uri: image }} style={{ resizeMode: 'contain', width: 360, height: 250, marginBottom: 16, alignSelf: 'center', marginTop: 4 }} />
+                            {dog.weight.metric ?
+                                <View style={styles.oneLine}>
+                                    <Text style={styles.label}>Weight:</Text>
+                                    <Text style={styles.description}>{`${dog.weight.metric} kg`}</Text>
+                                </View> : null}
+                            {dog.height.metric ?
+                                <View style={styles.oneLine}>
+                                    <Text style={styles.label}>Height:</Text>
+                                    <Text style={styles.description}>{`${dog.height.metric} cm`}</Text>
+                                </View> : null}
+                            {dog.life_span ?
+                                <View style={styles.oneLine}>
+                                    <Text style={styles.label}>Life expectancy:</Text>
+                                    <Text style={styles.description}>{`${dog.life_span}`}</Text>
+                                </View> : null}
+                            {dog.bred_for ?
+                                <View style={styles.oneLine}>
+                                    <Text style={styles.label}>Bred for:</Text>
+                                    <Text style={styles.description}>{`${dog.bred_for}`}</Text>
+                                </View> : null}
+                            {dog.breed_group ?
+                                <View style={styles.oneLine}>
+                                    <Text style={styles.label}>Breed group:</Text>
+                                    <Text style={styles.description}>{`${dog.breed_group}`}</Text>
+                                </View> : null}
+                            {dog.temperament ?
+                                <>
+                                    <Text style={styles.temperamentsLabel}>Temperaments:</Text>
+                                    <View style={styles.temperamentsContainer}>
+                                        {dog.temperament.split(', ').map((e, i) =>
+                                            <Text key={i} style={styles.temperament}>{e}</Text>
+                                        )}
+                                    </View>
+                                </>
+                                :
+                                null
+                            }
+                        </View>
                     </ScrollView>
                     :
                     <View style={styles.containerLoadingImage}>
-                        <Image source={require('../assets/loadingGif.gif')} style={{ resizeMode: 'contain', width: 150, height: 150 }} />
+                        <Image source={require('../assets/loadingGif.gif')} style={{ resizeMode: 'contain', width: 50, height: 50 }} />
                     </View>
             }
-        </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        width: '100%'
+    },
+    scroll: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        paddingHorizontal: '5%',
+    },
     content: {
         width: '90%'
     },
-    description: {
+    oneLine: {
+        flexDirection: 'row',
         marginBottom: 16,
-        textAlign: 'center'
+        alignItems: 'center',
+    },
+    label: {
+        fontWeight: 'bold',
+        width: '30%',
+        paddingRight: 10
+    },
+    description: {
+        width: '70%',
+    },
+    temperamentsLabel: {
+        fontWeight: 'bold',
+        paddingRight: 10
     },
     temperament: {
         backgroundColor: '#2962ff',
@@ -104,19 +133,14 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: 'transparent',
         borderWidth: 1,
-        marginHorizontal: 4,
+        marginRight: 4,
         marginBottom: 4
     },
     temperamentsContainer: {
         flex: 1,
         flexWrap: 'wrap',
         flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 8,
-        marginBottom: 12
-    },
-    label: {
-        fontWeight: 'bold'
+        marginTop: 4,
     },
     containerError: {
         flex: 1,
@@ -130,10 +154,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#f5c2c7",
         borderRadius: 5,
-        padding: 10
+        padding: 10,
+        width: '100%',
     },
     errorGlobal: {
-        color: '#842029'
+        color: '#842029',
+        textAlign: 'center'
     },
     containerLoadingImage: {
         flex: 1,
