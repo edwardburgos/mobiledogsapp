@@ -12,7 +12,7 @@ import PickerModal from 'react-native-picker-modal-view';
 import { close, search, options, closeWithoutCircle, closeWithoutCircleWhite, noResults } from '../assets/icons';
 import RadioButton from './RadioButton';
 import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-import { alltemperaments } from '../assets/simplifiedTemperaments';
+import { alltemperaments } from '../assets/temperaments';
 
 export default function Home({ navigation }) {
   // Redux states
