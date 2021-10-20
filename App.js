@@ -16,7 +16,7 @@ export default function App() {
       <SafeAreaProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name="Dogs app" component={Home} />
+            <Stack.Screen options={{headerShown: false}} name='Dogs app' component={Home} />
             <Stack.Screen name="Detail" component={Detail} options={({ route }) => ({ title: route.params.name })} />
           </Stack.Navigator>
         </NavigationContainer>

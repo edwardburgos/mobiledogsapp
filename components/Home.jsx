@@ -13,6 +13,8 @@ import { close, search, options, closeWithoutCircle, closeWithoutCircleWhite, no
 import RadioButton from './RadioButton';
 import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import { alltemperaments } from '../assets/temperaments';
+// import { StyleSheet, Platform, StatusBar } from "react-native";
+import Constants from 'expo-constants';
 
 export default function Home({ navigation }) {
   // Redux states
@@ -32,6 +34,8 @@ export default function Home({ navigation }) {
   const renderItem = ({ item }) => (
     <Item item={item} navigation={navigation} />
   );
+
+  const statusBarHeight = Constants.statusBarHeight
 
   // This hook allows us to get the dogs and temperaments
   useEffect(() => {
@@ -133,7 +137,7 @@ export default function Home({ navigation }) {
   )
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#fff', marginTop: statusBarHeight }}>
       {
         errorGlobal ?
           <View style={styles.containerError}>
