@@ -149,15 +149,21 @@ export default function Home({ navigation }) {
                 <View style={styles.searchContent}>
                   <View style={styles.test}>
                     <TextInput style={styles.searchInput} id="searchTerm" placeholder="Insert a dog breed" value={searchTerm} onChangeText={text => filter(['searchTerm', text])} />
-                    <TouchableOpacity
-                      style={styles.tinyLogoContainer}
-                      onPress={() => { if (searchTerm) { Keyboard.dismiss(); filter(['deleteSearch', '']) } }}
-                    >
-                      <Image
-                        style={styles.tinyLogo}
-                        source={searchTerm ? close : search}
-                      />
-                    </TouchableOpacity>
+                    {
+                      searchTerm ?
+                        <TouchableOpacity
+                          style={styles.tinyLogoContainer}
+                          onPress={() => { Keyboard.dismiss(); filter(['deleteSearch', '']); }}
+                        >
+                          <Image style={styles.tinyLogo} source={close} />
+                        </TouchableOpacity>
+                        :
+                        <View style={styles.tinyLogoContainer} >
+                          <Image style={styles.tinyLogo} source={search} />
+                        </View>
+                    }
+
+
                   </View>
                   <TouchableOpacity
                     style={styles.configContainer}
@@ -300,15 +306,19 @@ export default function Home({ navigation }) {
                     <View style={styles.searchModalContent}>
                       <View style={styles.test}>
                         <TextInput style={styles.searchInput} id="searchedTemperament" placeholder="Insert a temperament" value={searchedTemperament} onChangeText={text => findTemperament(text)} />
-                        <TouchableOpacity
-                          style={styles.tinyLogoContainer}
-                          onPress={() => { if (searchedTemperament) { Keyboard.dismiss(); findTemperament('') } }}
-                        >
-                          <Image
-                            style={styles.tinyLogo}
-                            source={searchedTemperament ? close : search}
-                          />
-                        </TouchableOpacity>
+                        {
+                          searchedTemperament ?
+                            <TouchableOpacity
+                              style={styles.tinyLogoContainer}
+                              onPress={() => { Keyboard.dismiss(); findTemperament(''); }}
+                            >
+                              <Image style={styles.tinyLogo} source={close} />
+                            </TouchableOpacity>
+                            :
+                            <View style={styles.tinyLogoContainer} >
+                              <Image style={styles.tinyLogo} source={search} />
+                            </View>
+                        }
                       </View>
                     </View>
                     {
