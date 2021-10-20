@@ -10,7 +10,7 @@ import { receiveDogs, modifyFinalResult } from '../actions';
 import Item from './Item';
 import PickerModal from 'react-native-picker-modal-view';
 import temperamentsJSON from '../assets/temperaments.json';
-import { close, search, options, closeWithoutCircle, closeWithoutCircleWhite } from '../assets/icons';
+import { close, search, options, closeWithoutCircle, closeWithoutCircleWhite, noResults } from '../assets/icons';
 import RadioButton from './RadioButton';
 import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import { alltemperaments } from '../assets/simplifiedTemperaments';
@@ -258,9 +258,13 @@ export default function Home({ navigation }) {
                   style={styles.flatlistSection}
                   keyExtractor={item => `${item.id}`} />
                 :
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-                  <Text style={styles.error}>{error}</Text>
-                </TouchableWithoutFeedback>
+                <View style={styles.noResultsContainer}>
+                  <Image
+                    style={styles.noResultsIcon}
+                    source={noResults}
+                  />
+                  <Text style={styles.noResultsText}>No dog breeds found</Text>
+                </View>
               }
 
               <Modal
@@ -307,12 +311,24 @@ export default function Home({ navigation }) {
                         </TouchableOpacity>
                       </View>
                     </View>
-                    <FlatList
-                      data={temperaments}
-                      renderItem={renderTemperament}
-                      onScroll={Keyboard.dismiss}
-                      style={styles.flatlistSectionModal}
-                      keyExtractor={item => `${item.toLowerCase()}`} />
+                    {
+                      temperaments.length ?
+                        <FlatList
+                          data={temperaments}
+                          renderItem={renderTemperament}
+                          onScroll={Keyboard.dismiss}
+                          style={styles.flatlistSectionModal}
+                          keyExtractor={item => `${item.toLowerCase()}`} />
+                        :
+                        <View style={styles.noResultsContainer}>
+                          <Image
+                            style={styles.noResultsIcon}
+                            source={noResults}
+                          />
+                          <Text style={styles.noResultsText}>No temperaments found</Text>
+                        </View>
+                    }
+
 
                     {/* <RadioButton temperament={e['Name']}/> */}
 
@@ -568,5 +584,20 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 4,
     paddingHorizontal: '5%'
+  },
+  noResultsContainer: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  noResultsIcon: {
+    width: 200,
+    height: 150,
+    marginBottom: 16,
+    resizeMode: 'contain'
+  },
+  noResultsText: {
+    fontWeight: 'bold'
   }
 })

@@ -6,7 +6,10 @@ export default function Item({ item, navigation }) {
     const { id, image, name, temperament } = item;
 
     return (
-        <View style={styles.card}>
+        <TouchableOpacity
+            style={styles.card}
+            onPress={() => { navigation.navigate('Detail', { id, name, image }) }}
+        >
             <Text style={styles.title}>{name}</Text>
             <Image source={{ uri: image }} style={{ resizeMode: 'contain', width: 300, height: 300, marginBottom: 16 }} />
             {temperament ?
@@ -23,13 +26,7 @@ export default function Item({ item, navigation }) {
                 :
                 null
             }
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => { navigation.navigate('Detail', { id, name, image }) }}
-            >
-                <Text style={styles.buttonText}>See details</Text>
-            </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     );
 }
 
