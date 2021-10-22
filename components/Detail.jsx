@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import axios from 'axios';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 
 export default function Detail({ route }) {
     // Own states

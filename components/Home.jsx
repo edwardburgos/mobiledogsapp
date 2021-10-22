@@ -1,34 +1,30 @@
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, FlatList, Modal, TouchableOpacity, Pressable, TouchableWithoutFeedback, Keyboard, Image, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, TextInput, View, FlatList, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Image } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import { Picker } from '@react-native-picker/picker';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { receiveDogs, modifyFinalResult } from '../actions';
 import Item from './Item';
-import PickerModal from 'react-native-picker-modal-view';
 import { close, search, options, closeWithoutCircle, closeWithoutCircleWhite, noResults } from '../assets/icons';
 import RadioButton from './RadioButton';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import { alltemperaments } from '../assets/temperaments';
-// import { StyleSheet, Platform, StatusBar } from "react-native";
 import Constants from 'expo-constants';
 
 export default function Home({ navigation }) {
   // Redux states
   const dogs = useSelector(state => state.dogs)
   const finalResultRedux = useSelector(state => state.finalResult)
+
   // Own States
   const [temperaments, setTemperaments] = useState(alltemperaments);
-  const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [temperament, setTemperament] = useState('');
   const [errorGlobal, setErrorGlobal] = useState('');
   const [selectedTemperaments, setSelectedTemperaments] = useState([]);
   const [showModal, setShowModal] = useState(false)
   const [searchedTemperament, setSearchedTemperament] = useState('')
+
   // Variables
   const dispatch = useDispatch();
   const renderItem = ({ item }) => (
@@ -59,14 +55,11 @@ export default function Home({ navigation }) {
     requesting();
     return () => source.cancel("Unmounted");
   }, [dispatch])
+
   // Functions
-  // This function is executed when a temperament is selected
-  function onSelected(selected) {
-    Object.keys(selected).length ? filter(['temperament', JSON.parse(JSON.stringify(selected)).Name]) : filter(['deleteTemperamentFilter'])
-  }
+
   // This function allows to filter the information
   function filter(data, currentTemperaments) {
-    if (dogs.length < 9) return setError('Wait a moment please');
     let componentValue = data[1];
     let componentId = data[0];
     let finalResult = [];
@@ -81,20 +74,7 @@ export default function Home({ navigation }) {
     if (!action && currentTemperaments.length) finalResult = finalResult.filter(e => e.temperament ? currentTemperaments.length === currentTemperaments.filter(temperament => e.temperament.includes(temperament)).length : false)
     if (action === 'add') finalResult = finalResult.filter(e => e.temperament ? currentTemperaments.length + 1 === [...currentTemperaments, componentValue].filter(temperament => e.temperament.includes(temperament)).length : false)
     if (action === 'delete' && currentTemperaments.length !== 1) finalResult = finalResult.filter(e => e.temperament ? currentTemperaments.length - 1 === currentTemperaments.filter(e => e !== componentValue).filter(temperament => e.temperament.includes(temperament)).length : false)
-
-
-
-    // if (componentId === 'searchTerm') { setSearchTerm(componentValue); finalResult = base.filter((e) => e.name.toLowerCase().includes(componentValue.toLowerCase()))}} else { if (searchTerm) { finalResult = dogs.filter((e) => e.name.toLowerCase().includes(searchTerm.toLowerCase())) } else { finalResult = dogs } }
-    // if (componentId === 'deleteSearch') { if (searchTerm) { finalResult = dogs; setSearchTerm(''); } else { return } }
-    // if (currentTemperaments) console.log(currentTemperaments, componentValue, currentTemperaments.includes(componentValue), 'INCLUIDO')
-    // if (componentValue && (componentValue.toLowerCase() === componentId && !currentTemperaments.includes(componentValue))) {
-    //   finalResult = finalResult.filter(e => e.temperament ? currentTemperaments.length + 1 === [...currentTemperaments, componentValue].filter(temperament => e.temperament.includes(temperament)).length : false)
-    // } else if (componentValue && (componentValue.toLowerCase() === componentId && currentTemperaments.includes(componentValue) || `id${componentValue.toLowerCase()}` === componentId && currentTemperaments.includes(componentValue))) {
-    //   finalResult = finalResult.filter(e => e.temperament ? currentTemperaments.length - 1 === currentTemperaments.filter(e => e !== componentValue).filter(temperament => e.temperament.includes(temperament)).length : false)
-    //   console.log('AHORA', finalResult)
-    // }
-    if (!finalResult.length) setError('Not results found')
-    dispatch(modifyFinalResult(finalResult))
+   dispatch(modifyFinalResult(finalResult))
   }
 
   function findTemperament(text) {
@@ -121,18 +101,6 @@ export default function Home({ navigation }) {
       >
         <RadioButton selected={selectedTemperaments.includes(item)} />
       </TouchableOpacity>
-
-      {/* <View style={styles.radioBorder}>
-        <View style={styles.radioSelected} />
-        
-      </View> */}
-
-      {/* {
-          props.selected ?
-            <View style={styles.radioSelected} />
-            : null
-        } */}
-
       <Text>{item}</Text>
     </View>
   )
@@ -166,8 +134,6 @@ export default function Home({ navigation }) {
                           <Image style={styles.tinyLogo} source={search} />
                         </View>
                     }
-
-
                   </View>
                   <TouchableOpacity
                     style={styles.configContainer}
@@ -202,64 +168,6 @@ export default function Home({ navigation }) {
                 }
               </View>
 
-
-              {/* <div className={s.test}>
-                      <Form.Control id="searchTerm" autoComplete="off" value={searchTerm} onChange={e => filter(e)} className={s.searchInput} placeholder='Search a dog breed' />
-                      <IonIcon icon={searchTerm ? closeCircleOutline : searchOutline} className={s.iconDumb} id="deleteSearch" onClick={e => filter(e)}></IonIcon>
-                    </div>
-                    <IonIcon icon={optionsOutline} className={s.filterIcon} onClick={() => setShowFilterModal(true)}></IonIcon>
-                  </div>
-                  <div className={selectedTemperaments.length ? s.temperaments : s.invisible}>
-                    {selectedTemperaments.map(e =>
-                      <div key={e} className={s.temperamentContainer}>
-                        <span className={s.temperament}>{e}</span>
-                        <IonIcon icon={closeCircleOutline} className={s.iconDumb} onClick={event => { setSelectedTemperaments([...new Set(selectedTemperaments.filter(element => element !== e))]); filter({ target: { value: e, id: `id${e.toLowerCase()}` } }, selectedTemperaments); }}></IonIcon>
-                      </div>
-                    )} */}
-
-              {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-                <View style={styles.filterSection}>
-                  <Text style={styles.label}>Search a breed</Text>
-                  <TextInput style={styles.searchInput} id="searchTerm" placeholder="Insert a dog breed" value={searchTerm} onChangeText={text => filter(['searchTerm', text])} />
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => { Keyboard.dismiss(); filter(['deleteSearch']); }}
-                  >
-                    <Text style={styles.buttonText}>Delete search</Text>
-                  </TouchableOpacity>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-                <View style={styles.filterSection}>
-                  <Text style={styles.label}>Filter by temperament</Text>
-                  <PickerModal
-                    renderSelectView={(disabled, selected, showModal) =>
-                      <TouchableOpacity
-                        style={styles.selectContainer}
-                        onPress={showModal}
-                      >
-                        <Text style={temperament ? styles.selectedText : styles.selectText}>{temperament ? temperament : 'Select a temperament'}</Text>
-                      </TouchableOpacity>
-                    }
-                    onSelected={onSelected}
-                    items={temperamentsJSON}
-                    sortingLanguage={'tr'}
-                    showToTopButton={true}
-                    selected={temperament}
-                    showAlphabeticalIndex={true}
-                    autoGenerateAlphabeticalIndex={true}
-                    searchPlaceholderText={'Search a temperament'}
-                    requireSelection={false}
-                    autoSort={false}
-                  />
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => { Keyboard.dismiss(); filter(['deleteTemperamentFilter']) }}
-                  >
-                    <Text style={styles.buttonText}>Delete filter</Text>
-                  </TouchableOpacity>
-                </View>
-              </TouchableWithoutFeedback> */}
               {finalResultRedux.length ?
                 <FlatList
                   data={finalResultRedux}
@@ -360,6 +268,7 @@ export default function Home({ navigation }) {
     </View>
   )
 }
+
 const styles = StyleSheet.create({
   containerError: {
     flex: 1,
@@ -373,10 +282,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   searchContainer: {
-    // flex: 1,
-    // justifyContent: 'space-between',
-    // alignItems: 'center',
-    // flexDirection: 'row',
     backgroundColor: '#1ce609',
     height: 60
   },
@@ -387,7 +292,6 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   searchContent: {
-    // flex: 1,
     flexDirection: 'row',
     paddingHorizontal: '5%',
     alignItems: 'center',
@@ -426,8 +330,6 @@ const styles = StyleSheet.create({
   },
   temperamentText: {
     color: '#fff'
-    // flex: 1,
-    // flexDirection: 'column'
   },
   contentCenter: {
     backgroundColor: '#f8d7da',
@@ -500,9 +402,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   closeModalButton: {
-    //alignItems: 'flex-end',
-    // justifyContent: 'flex-end',
-    // right: 10,
     height: 30,
     width: 30,
     marginLeft: 8,
@@ -512,7 +411,6 @@ const styles = StyleSheet.create({
     height: 30
   },
   tinyLogo: {
-    // verticalAlign: 'middle',
     position: 'absolute',
     height: 20,
     width: 20,
