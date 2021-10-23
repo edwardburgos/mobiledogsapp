@@ -39,9 +39,9 @@ export default function Home({ navigation }) {
     const source = cancelToken.source();
     async function requesting() {
       try {
-        let completeDogs = await axios.get(`https://api.thedogapi.com/v1/breeds`, { cancelToken: source.token });
+        let completeDogs = await axios.get(`https://edwardburgosdogsapp.herokuapp.com/dogs/all`, { cancelToken: source.token });
         if (completeDogs.status === 200) {
-          completeDogs = completeDogs.data.map(e => { return { id: e.id, image: e.image.url, name: e.name, temperament: e.temperament ? e.temperament : '' } })
+          completeDogs = completeDogs.data;
           dispatch(receiveDogs(completeDogs));
           dispatch(modifyFinalResult(completeDogs));
 

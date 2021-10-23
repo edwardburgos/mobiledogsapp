@@ -16,7 +16,7 @@ export default function Detail({ route }) {
         const source = cancelToken.source();
         async function findDog(id) {
             try {
-                const response = await axios.get(`https://api.thedogapi.com/v1/breeds/${id}`, { cancelToken: source.token });
+                const response = await axios.get(`https://edwardburgosdogsapp.herokuapp.com/dogs/${id}`, { cancelToken: source.token });
                 if (response.status === 200) {
                     setDog(response.data);
                 } else {
@@ -43,20 +43,20 @@ export default function Detail({ route }) {
                     <ScrollView contentContainerStyle={styles.scroll}>
                         <View>
                             <Image source={{ uri: image }} style={{ resizeMode: 'contain', width: 360, height: 250, marginBottom: 16, alignSelf: 'center', marginTop: 4 }} />
-                            {dog.weight.metric ?
+                            {dog.weight ?
                                 <View style={styles.oneLine}>
                                     <Text style={styles.label}>Weight:</Text>
-                                    <Text style={styles.description}>{`${dog.weight.metric} kg`}</Text>
+                                    <Text style={styles.description}>{`${dog.weight}`}</Text>
                                 </View> : null}
-                            {dog.height.metric ?
+                            {dog.height ?
                                 <View style={styles.oneLine}>
                                     <Text style={styles.label}>Height:</Text>
-                                    <Text style={styles.description}>{`${dog.height.metric} cm`}</Text>
+                                    <Text style={styles.description}>{`${dog.height}`}</Text>
                                 </View> : null}
-                            {dog.life_span ?
+                            {dog.lifespan ?
                                 <View style={styles.oneLine}>
                                     <Text style={styles.label}>Life expectancy:</Text>
-                                    <Text style={styles.description}>{`${dog.life_span}`}</Text>
+                                    <Text style={styles.description}>{`${dog.lifespan}`}</Text>
                                 </View> : null}
                             {dog.bred_for ?
                                 <View style={styles.oneLine}>
