@@ -115,14 +115,13 @@ const styles = StyleSheet.create({
     label: {
         fontWeight: 'bold',
         width: '30%',
-        paddingRight: 10
     },
     description: {
         width: '70%',
+        paddingLeft: 10
     },
     temperamentsLabel: {
         fontWeight: 'bold',
-        paddingRight: 10
     },
     temperament: {
         backgroundColor: '#2962ff',
