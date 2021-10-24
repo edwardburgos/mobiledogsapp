@@ -156,7 +156,7 @@ export default function Home({ navigation }) {
                       <Text style={styles.temperamentText}>{e}</Text>
                       <TouchableOpacity
                         style={styles.deleteContainer}
-                        onPress={() => { setSelectedTemperaments(selectedTemperaments.filter(temperament => temperament !== e)); filter([`id${e.toLowerCase()}`, e], selectedTemperaments); }}
+                        onPress={() => { setSelectedTemperaments(selectedTemperaments.filter(temperament => temperament !== e)); filter([`id${e.toLowerCase()}`, e], selectedTemperaments); Keyboard.dismiss(); }}
                       >
                         <Image
                           style={styles.deleteTemperament}
